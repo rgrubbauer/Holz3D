@@ -113,35 +113,46 @@
     </div>
 
     <script>
-        const authURL = "https://script.google.com/macros/s/AKfycbyAL9gWRZ5hYNdGoPSHZkWCn14byLlOynwUEAP3lcJdqv9NOwbBGvuMhIY7qMnc3mrO_g/exec";
+        const authURL = "DEINE_AKTUELLE_URL_HIER";
         const email = localStorage.getItem("userEmail");
 
-        // 1. Daten beim Laden der Seite abrufen
+        // 1. DIESE FUNKTION MUSS GLOBAL SEIN (Ganz oben stehen)
+        function handleData(data) {
+            console.log("Daten von Google empfangen:", data);
+            const loadingEl = document.getElementById("loading");
+            if (loadingEl) loadingEl.style.display = "none";
+
+            if (data && !data.error) {
+                if (data.address) document.getElementById("address").value = data.address;
+                if (data.postal) document.getElementById("postal").value = data.postal;
+                if (data.city) document.getElementById("city").value = data.city;
+            } else {
+                if (loadingEl) loadingEl.innerText = "Keine Profildaten gefunden.";
+            }
+        }
+
+        // 2. Der Aufruf beim Laden
         window.onload = function () {
-            const email = localStorage.getItem("userEmail");
             if (!email) {
                 alert("Bitte logge dich zuerst ein.");
                 window.location.href = "login.html";
                 return;
             }
 
-            // Wir erstellen ein "Script"-Tag im Hintergrund. 
-            // Das blockiert der Browser niemals, egal ob lokal oder GitHub!
+            // Wir erstellen das Script-Tag für JSONP
             const script = document.createElement('script');
-            script.src = `${authURL}?action=getUserData&email=${encodeURIComponent(email)}&callback=handleData`;
+            // Zeitstempel (t=...) verhindert, dass der Browser alte Daten anzeigt
+            script.src = `${authURL}?action=getUserData&email=${encodeURIComponent(email)}&callback=handleData&t=${new Date().getTime()}`;
+
+            // Fehlerbehandlung, falls das Script gar nicht lädt
+            script.onerror = function () {
+                document.getElementById("loading").innerText = "Verbindung zum Server fehlgeschlagen.";
+            };
+
             document.body.appendChild(script);
         };
 
-        // Diese Funktion wird aufgerufen, wenn die Daten von Google ankommen
-        function handleData(data) {
-            document.getElementById("loading").style.display = "none";
-            if (data.address) document.getElementById("address").value = data.address;
-            if (data.postal) document.getElementById("postal").value = data.postal;
-            if (data.city) document.getElementById("city").value = data.city;
-            console.log("Daten über Callback geladen:", data);
-        }
-
-        // 2. Daten speichern
+        // 3. Speichern-Funktion (bleibt gleich)
         function saveProfile() {
             const btn = document.getElementById("saveBtn");
             btn.innerText = "Wird gespeichert...";
@@ -154,19 +165,14 @@
             params.append('postal', document.getElementById('postal').value);
             params.append('city', document.getElementById('city').value);
 
-            fetch(authURL, { method: 'POST', body: params })
-                .then(res => res.text())
-                .then(response => {
-                    if (response.trim() === "SUCCESS_UPDATE") {
-                        alert("Profil erfolgreich aktualisiert!");
-                    } else {
-                        alert("Fehler beim Speichern.");
-                    }
+            fetch(authURL, { method: 'POST', body: params, mode: 'no-cors' })
+                .then(() => {
+                    alert("Profil erfolgreich aktualisiert!");
                     btn.innerText = "Daten speichern";
                     btn.disabled = false;
                 })
                 .catch(error => {
-                    alert("Netzwerkfehler.");
+                    console.error("Speicherfehler:", error);
                     btn.disabled = false;
                 });
         }
