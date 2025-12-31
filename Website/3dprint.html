@@ -309,6 +309,7 @@
                     .then(text => {
                         const data = JSON.parse(text);
                         if (data && !data.error) {
+                             if (data.address) document.querySelector('input[name="name"]').value = data.name;
                             if (data.address) document.querySelector('input[name="test"]').value = data.address;
                             if (data.postal) document.querySelector('input[name="postal"]').value = data.postal;
                             if (data.city) document.querySelector('input[name="city"]').value = data.city;
@@ -316,6 +317,7 @@
                     });
             }
         }
+
         function checkLogin() {
             const statusText = document.getElementById("userStatus");
             const authBtn = document.getElementById("auth-btn");
