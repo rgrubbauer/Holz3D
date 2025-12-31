@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holz3D - Login</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f4f4f4;
+        }
+
+        .auth-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 350px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .toggle {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-card">
+        <h2 id="title">Login</h2>
+        <form id="authForm">
+            <input type="text" id="regName" placeholder="Dein Name" style="display:none;">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Passwort" required>
+            <button type="submit" id="btnText">Einloggen</button>
+        </form>
+        <div class="toggle" id="toggleBtn" onclick="switchMode()">Noch kein Account? Registrieren</div>
+        <br>
+        <div><a href="main.html" style="font-size: 12px; color: gray;">Zurück zur Startseite</a></div>
+    </div>
+
+    <script>
+        // DEINE URL (Stelle sicher, dass dies die URL vom AUTH-SCRIPT ist)
+        const scriptURL = "https://script.google.com/macros/s/AKfycbzA2hnVQav5RHKvJmHA1JbhlyCM4NGlY9jEO8IXar2Em_-i-Wqv0SMO6MII5NiXLH4kpw/exec";
+        let mode = "login";
+
+        function switchMode() {
+            mode = (mode === "login") ? "signup" : "login";
+            document.getElementById("title").innerText = (mode === "login") ? "Login" : "Registrieren";
+            document.getElementById("btnText").innerText = (mode === "login") ? "Einloggen" : "Account erstellen";
+            document.getElementById("regName").style.display = (mode === "login") ? "none" : "block";
+            document.getElementById("regName").required = (mode === "signup");
+            document.getElementById("toggleBtn").innerText = (mode === "login") ? "Noch kein Account? Registrieren" : "Habe bereits einen Account? Login";
+        }
+
+        document.getElementById("authForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const btn = document.getElementById("btnText");
+            btn.disabled = true;
+            btn.innerText = "Bitte warten...";
+
+            const emailValue = document.getElementById("email").value;
+            const passValue = document.getElementById("password").value;
+            const nameValue = document.getElementById("regName").value;
+
+            // Passwort verschlüsseln
+            const hashedPassword = CryptoJS.SHA256(passValue).toString();
+
+            const params = new URLSearchParams();
+            params.append('action', mode); // Nutzt automatisch "login" oder "signup"
+            params.append('email', emailValue);
+            params.append('password', hashedPassword);
+
+            if (mode === "signup") {
+                params.append('name', nameValue);
+            }
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: params
+            })
+                .then(res => res.text())
+                .then(response => {
+                    const cleanResponse = response.trim();
+
+                    if (cleanResponse === "SUCCESS") {
+                        localStorage.setItem("userEmail", emailValue);
+                        alert(mode === "login" ? "Login erfolgreich!" : "Account erstellt!");
+
+                        // NEU: Nach Signup zur Profil-Vervollständigung, nach Login zur Main
+                        window.location.href = (mode === "signup") ? "profile.html" : "main.html";
+                    } else {
+                        alert("Fehler: " + cleanResponse);
+                        resetButton();
+                    }
+                })
+                .catch(error => {
+                    console.error("Fehler:", error);
+                    // Fallback für CORS Probleme bei Google
+                    localStorage.setItem("userEmail", emailValue);
+                    window.location.href = (mode === "signup") ? "profile.html" : "main.html";
+                });
+
+            function resetButton() {
+                btn.disabled = false;
+                btn.innerText = (mode === "login") ? "Einloggen" : "Account erstellen";
+            }
+        });
+    </script>
+</body>
+
+</html>

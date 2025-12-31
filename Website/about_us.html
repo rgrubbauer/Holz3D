@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, inital-scale=1.0">
+
+    <style>
+        a {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            text-decoration: none;
+            color: black;
+            transition: color 0.3s ease;
+        }
+
+        .menu {
+            text-align: center;
+            font-size: larger;
+        }
+
+        .menu nav a {
+            padding: 0 15px;
+            display: inline-block;
+        }
+
+        .menu nav a:hover {
+            text-decoration: underline;
+            color: grey;
+        }
+
+        .menu nav a.active {
+            color: gray;
+            text-decoration: none;
+            pointer-events: none;
+        }
+
+        .overhead {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .abt{
+            text-align: center;
+            font-size: large;
+        }
+
+        @media (max-width: 600px) {
+            .menu nav a {
+                display: block;
+                padding: 10px 0;
+                font-size: 22px;
+            }
+
+            .overhead h1 {
+                font-size: 28xp;
+            }
+
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+
+    <div class="overhead">
+        <h1> Holz3D Werk&reg;</h1>
+    </div>
+    <br>
+    <div class="menu">
+        <nav>
+            <a href="about_us.html" class="active"> About-us </a>
+            <a href="3dprint.html"> 3D-Printing </a>
+            <a href="wood.html"> Wood-laser </a>
+            <a href="main.html"> Hompage </a>
+            <a href="Shop.html"> Shop </a>
+        </nav>
+    </div>
+
+
+<br><br><br>
+
+    <div class="abt">
+
+        <a> We are a small business located in Austria and we are doing people a favor.</a> <br>
+        <a> Because some poeple don't have a 3D printer or wood laser at Home and they need spare parts or want to implement small projects. </a> <br>
+        <a> So we are here and you can send us your projects we print or laser it and you get your parts in a few days.</a>
+
+    </div>
+
+</body>

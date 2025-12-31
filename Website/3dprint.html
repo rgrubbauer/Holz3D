@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, inital-scale=1.0">
+
+    <style>
+        a {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            text-decoration: none;
+            color: black;
+            transition: color 0.3s ease;
+        }
+
+        .menu {
+            text-align: center;
+            font-size: larger;
+            border: #666;
+            border-radius: 4px;
+            border-width: 4px;
+        }
+
+        .menu nav a {
+            padding: 0 15px;
+            display: inline-block;
+        }
+
+        .menu nav a:hover {
+            text-decoration: underline;
+            color: grey;
+        }
+
+        .menu nav a.active {
+            color: gray;
+            text-decoration: none;
+            pointer-events: none;
+        }
+
+        .overhead {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .buyprint {
+            font-size: large;
+            text-align: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .print {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .shippinginfo {
+            font-size: 12px;
+            color: #666;
+            margin-top: 1px;
+        }
+
+        #submitBtn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #submitBtn:disabled {
+            background: #444 !important;
+            animation: pulse 3s infinite;
+            cursor: wait;
+        }
+
+        .auth-nav {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .auth-btn {
+            padding: 8px 15px;
+            border: 1px solid black;
+            background: white;
+            cursor: pointer;
+            font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .auth-btn:hover {
+            background: black;
+            color: white;
+        }
+
+        #userStatus {
+            font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+            font-size: 14px;
+            align-self: center;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .menu nav a {
+                display: block;
+                padding: 10px 0;
+                font-size: 22px;
+            }
+
+            .overhead h1 {
+                font-size: 28xp;
+            }
+
+            .auth-nav {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+
+    <div class="auth-nav">
+        <span id="userStatus"></span>
+        <button id="auth-btn" class="auth-btn" onclick="handleAuthAction()">Login</button>
+    </div>
+
+    <div class="overhead">
+        <h1> Holz3D Werk&reg;</h1>
+    </div>
+    <br>
+    <div class="menu">
+        <nav>
+            <a href="about_us.html"> About-us </a>
+            <a href="3dprint.html" class="active"> 3D-Printing </a>
+            <a href="wood.html"> Wood-laser </a>
+            <a href="main.html"> Hompage </a>
+            <a href="Shop.html"> Shop </a>
+        </nav>
+    </div>
+
+
+
+    <div class="buyprint">
+
+        <br><br><br>
+        <h2> You upload, We print and Send! </h2>
+    </div>
+    <br>
+    <div class="print">
+
+        <form id="orderForm">
+
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" name="name" required><br><br>
+            </div>
+
+            <div class="form-group">
+                <label>Your Address</label>
+                <input type="text" name="test" required> <br> </textarea>
+
+                <div class="shippinginfo">
+                    <a>*Only shipping to Germany and Austria </a>
+                </div>
+                <br>
+            </div>
+
+            <div class="form-group">
+                <label>Postal code</label>
+                <input type="number" name="postal" required> <br><br>
+            </div>
+
+            <div class="form-group">
+                <label>City</label>
+                <input type="text" name="city" required> <br><br>
+            </div>
+
+            <div class="form-group">
+                <label> Email Address</label>
+                <input type="email" name="email" required> <br><br>
+            </div>
+
+            <div class="form-group">
+                <label>Upload your file</label>
+                <input type="file" id="fileField" name="upload" accept=".stl,.obj" required> <br><br>
+            </div>
+
+            <button type="submit" id="submitBtn"
+                style="padding:  10px 20px; background: black; color: white; border: none; cursor: pointer;">
+                Kostenpflichtig bestellen
+            </button>
+
+            </table>
+        </form>
+
+        <div id="successmsg"
+            style="display: none; text-align: center; padding: 20px; border: 2px solid green; background: #eaffea; border-radius: 8px; margin-top: 20px;">
+            <h3 style="color: green; margin: 0;"> Order succesful </h3>
+            <button onclick="location.reload()" style="margin-top: 10px; padding:5px 15px; cursor: pointer;">New
+                Order</button>
+        </div>
+
+
+    </div>
+
+    <script>
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzmeCB_GJlG12kDIEl6kfbjiGVJ2kwctFw9jEXjJ9LjjSOX3bXg83QmkjODs-XR7st8/exec';
+const form = document.getElementById('orderForm');
+const btn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.innerText = "Wird übertragen...";
+
+    const fileField = document.getElementById('fileField');
+    const file = fileField.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function () {
+        const base64Data = reader.result.split(',')[1];
+        const formData = new URLSearchParams();
+
+        // Alle Daten für das Google Script sammeln
+        formData.append('fileData', base64Data);
+        formData.append('fileName', file.name);
+        formData.append('mimeType', file.type);
+        formData.append('name', form.name.value);
+        formData.append('email', form.email.value);
+        formData.append('test', form.test.value); // Deine Adresse
+        formData.append('postal', form.postal.value);
+        formData.append('city', form.city.value);
+        formData.append('action', 'order'); // Wichtig für das Script
+
+        // Senden mit 'no-cors' für den Datei-Upload
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        })
+        .then(() => {
+            // Erfolg: Formular ausblenden und Nachricht zeigen
+            form.style.display = 'none';
+            document.querySelector('.buyprint').style.display = 'none';
+            document.getElementById('successmsg').style.display = 'block';
+        })
+        .catch(error => {
+            alert("Fehler beim Senden!");
+            btn.disabled = false;
+            btn.innerText = "Kostenpflichtig bestellen";
+            console.error(error);
+        });
+    };
+    reader.readAsDataURL(file);
+});
+
+// --- LOGIN-STATUS PRÜFEN ---
+function checkLogin() {
+    const statusText = document.getElementById("userStatus");
+    const authBtn = document.getElementById("auth-btn");
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (userEmail) {
+        statusText.innerText = "Hallo, " + userEmail.split('@')[0];
+        authBtn.innerText = "Logout";
+
+        // E-Mail Adresse im Formular automatisch ausfüllen
+        const emailInput = document.querySelector('input[name="email"]');
+        if (emailInput) emailInput.value = userEmail;
+
+        authBtn.onclick = function () {
+            localStorage.clear();
+            location.reload();
+        };
+    } else {
+        statusText.innerText = "";
+        authBtn.innerText = "Login / Register";
+        authBtn.onclick = function () {
+            window.location.href = "login.html";
+        };
+    }
+}
+
+window.onload = checkLogin;
+    </script>
+
+</body>
