@@ -297,44 +297,42 @@
         });
 
         // --- 2. FUNKTION: LOGIN & ADRESSE LADEN ---
-        function checkLoginAndLoadData() {
-            const userEmail = localStorage.getItem("userEmail");
-            if (userEmail) {
-                document.getElementById("userStatus").innerText = "Hallo, " + userEmail.split('@')[0];
-                document.querySelector('input[name="email"]').value = userEmail;
-
-                // Hier wird das AUTH-Script genutzt, um die Adresse zu holen
-                fetch(`${authScriptURL}?action=getUserData&email=${encodeURIComponent(userEmail)}`)
-                    .then(res => res.text())
-                    .then(text => {
-                        const data = JSON.parse(text);
-                        if (data && !data.error) {
-                             if (data.address) document.querySelector('input[name="name"]').value = data.name;
-                            if (data.address) document.querySelector('input[name="test"]').value = data.address;
-                            if (data.postal) document.querySelector('input[name="postal"]').value = data.postal;
-                            if (data.city) document.querySelector('input[name="city"]').value = data.city;
-                        }
-                    });
-            }
-        }
-
-        function checkLogin() {
+        // --- LOGIN & DATEN LADEN IN EINEM ---
+        function initPage() {
             const statusText = document.getElementById("userStatus");
             const authBtn = document.getElementById("auth-btn");
             const userEmail = localStorage.getItem("userEmail");
 
             if (userEmail) {
-                // Zeige "Hallo, Name" als Link zu profile.html
-                const userName = userEmail.split('@')[0];
-                statusText.innerHTML = `Hallo, <a href="Profile.html" style="color: black; text-decoration: underline; cursor: pointer;">${userName}</a>`;
+                // 1. Status oben rechts anzeigen
+                const userNameDisplay = userEmail.split('@')[0];
+                statusText.innerHTML = `Hallo, <a href="Profile.html" style="color: black; text-decoration: underline; cursor: pointer;">${userNameDisplay}</a>`;
 
                 authBtn.innerText = "Logout";
                 authBtn.onclick = function () {
                     localStorage.clear();
                     location.reload();
                 };
+
+                // 2. E-Mail im Formular schon mal eintragen
+                document.querySelector('input[name="email"]').value = userEmail;
+
+                // 3. Restliche Profildaten (inkl. Name) per Fetch laden
+                fetch(`${authScriptURL}?action=getUserData&email=${encodeURIComponent(userEmail)}`)
+                    .then(res => res.text())
+                    .then(text => {
+                        const data = JSON.parse(text);
+                        if (data && !data.error) {
+                            // Namen und Adresse in die Formularfelder eintragen
+                            if (data.name) document.querySelector('input[name="name"]').value = data.name;
+                            if (data.address) document.querySelector('input[name="test"]').value = data.address;
+                            if (data.postal) document.querySelector('input[name="postal"]').value = data.postal;
+                            if (data.city) document.querySelector('input[name="city"]').value = data.city;
+                        }
+                    })
+                    .catch(err => console.error("Fehler beim Laden:", err));
+
             } else {
-                // Zeige nichts und biete Login an
                 statusText.innerText = "";
                 authBtn.innerText = "Login / Register";
                 authBtn.onclick = function () {
@@ -343,9 +341,8 @@
             }
         }
 
-        // WICHTIG: Die Funktion muss beim Laden der Seite auch aufgerufen werden!
-        window.onload = checkLogin;
-        window.onload = checkLoginAndLoadData;
+        // Nur EINMAL window.onload definieren!
+        window.onload = initPage;
     </script>
 
 </body>
