@@ -125,26 +125,21 @@
                 return;
             }
 
-            // Wir hängen einen Zeitstempel an (&t=...), um den Cache zu umgehen
-            const finalURL = `${authURL}?action=getUserData&email=${encodeURIComponent(email)}&t=${new Date().getTime()}`;
-
-            fetch(finalURL)
-                .then(res => res.text()) // Zuerst als Text empfangen (umgeht viele CORS Probleme)
-                .then(text => {
-                    const data = JSON.parse(text); // Den Text hier in JSON umwandeln
-                    document.getElementById("loading").style.display = "none";
-
-                    if (data.address) document.getElementById("address").value = data.address;
-                    if (data.postal) document.getElementById("postal").value = data.postal;
-                    if (data.city) document.getElementById("city").value = data.city;
-
-                    console.log("Erfolgreich geladen:", data);
-                })
-                .catch(err => {
-                    console.error("Fehler:", err);
-                    document.getElementById("loading").innerText = "Daten konnten nicht geladen werden.";
-                });
+            // Wir erstellen ein "Script"-Tag im Hintergrund. 
+            // Das blockiert der Browser niemals, egal ob lokal oder GitHub!
+            const script = document.createElement('script');
+            script.src = `${authURL}?action=getUserData&email=${encodeURIComponent(email)}&callback=handleData`;
+            document.body.appendChild(script);
         };
+
+        // Diese Funktion wird aufgerufen, wenn die Daten von Google ankommen
+        function handleData(data) {
+            document.getElementById("loading").style.display = "none";
+            if (data.address) document.getElementById("address").value = data.address;
+            if (data.postal) document.getElementById("postal").value = data.postal;
+            if (data.city) document.getElementById("city").value = data.city;
+            console.log("Daten über Callback geladen:", data);
+        }
 
         // 2. Daten speichern
         function saveProfile() {
