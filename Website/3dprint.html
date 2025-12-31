@@ -245,84 +245,78 @@
     </div>
 
     <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzmeCB_GJlG12kDIEl6kfbjiGVJ2kwctFw9jEXjJ9LjjSOX3bXg83QmkjODs-XR7st8/exec';
-const form = document.getElementById('orderForm');
-const btn = document.getElementById('submitBtn');
+        // URL 1: Nur für das Speichern der Bestellung (das Script mit dem Datei-Upload)
+        const orderScriptURL = 'https://script.google.com/macros/s/AKfycbwWcBjO3UKJMRYJO9PphPlhiFhZkgUb22loxQJgkB5ThWHBrE2TD5skk10HMD_5R9ai/exec';
 
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    btn.disabled = true;
-    btn.innerText = "Wird übertragen...";
+        // URL 2: Nur für die Nutzerdaten (Login-Check und Adresse laden)
+        const authScriptURL = 'https://script.google.com/macros/s/AKfycbwyGhRZEdHbHLmsregdw71iaJrBZlref1Z_L6EF6dfOjDtL5VT1wlztsrcBjBUaN3e5LQ/exec';
 
-    const fileField = document.getElementById('fileField');
-    const file = fileField.files[0];
-    const reader = new FileReader();
+        const form = document.getElementById('orderForm');
+        const btn = document.getElementById('submitBtn');
 
-    reader.onload = function () {
-        const base64Data = reader.result.split(',')[1];
-        const formData = new URLSearchParams();
+        // --- 1. FUNKTION: BESTELLUNG SENDEN ---
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerText = "Wird übertragen...";
 
-        // Alle Daten für das Google Script sammeln
-        formData.append('fileData', base64Data);
-        formData.append('fileName', file.name);
-        formData.append('mimeType', file.type);
-        formData.append('name', form.name.value);
-        formData.append('email', form.email.value);
-        formData.append('test', form.test.value); // Deine Adresse
-        formData.append('postal', form.postal.value);
-        formData.append('city', form.city.value);
-        formData.append('action', 'order'); // Wichtig für das Script
+            const fileField = document.getElementById('fileField');
+            const file = fileField.files[0];
+            const reader = new FileReader();
 
-        // Senden mit 'no-cors' für den Datei-Upload
-        fetch(scriptURL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: formData
-        })
-        .then(() => {
-            // Erfolg: Formular ausblenden und Nachricht zeigen
-            form.style.display = 'none';
-            document.querySelector('.buyprint').style.display = 'none';
-            document.getElementById('successmsg').style.display = 'block';
-        })
-        .catch(error => {
-            alert("Fehler beim Senden!");
-            btn.disabled = false;
-            btn.innerText = "Kostenpflichtig bestellen";
-            console.error(error);
+            reader.onload = function () {
+                const base64Data = reader.result.split(',')[1];
+                const formData = new URLSearchParams();
+
+                formData.append('fileData', base64Data);
+                formData.append('fileName', file.name);
+                formData.append('mimeType', file.type);
+                formData.append('name', form.name.value);
+                formData.append('email', form.email.value);
+                formData.append('test', form.test.value);
+                formData.append('postal', form.postal.value);
+                formData.append('city', form.city.value);
+                formData.append('action', 'order');
+
+                // Hier wird das ORDER-Script genutzt
+                fetch(orderScriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                })
+                    .then(() => {
+                        form.style.display = 'none';
+                        document.getElementById('successmsg').style.display = 'block';
+                    })
+                    .catch(error => {
+                        alert("Fehler beim Senden!");
+                        btn.disabled = false;
+                    });
+            };
+            reader.readAsDataURL(file);
         });
-    };
-    reader.readAsDataURL(file);
-});
 
-// --- LOGIN-STATUS PRÜFEN ---
-function checkLogin() {
-    const statusText = document.getElementById("userStatus");
-    const authBtn = document.getElementById("auth-btn");
-    const userEmail = localStorage.getItem("userEmail");
+        // --- 2. FUNKTION: LOGIN & ADRESSE LADEN ---
+        function checkLoginAndLoadData() {
+            const userEmail = localStorage.getItem("userEmail");
+            if (userEmail) {
+                document.getElementById("userStatus").innerText = "Hallo, " + userEmail.split('@')[0];
+                document.querySelector('input[name="email"]').value = userEmail;
 
-    if (userEmail) {
-        statusText.innerText = "Hallo, " + userEmail.split('@')[0];
-        authBtn.innerText = "Logout";
-
-        // E-Mail Adresse im Formular automatisch ausfüllen
-        const emailInput = document.querySelector('input[name="email"]');
-        if (emailInput) emailInput.value = userEmail;
-
-        authBtn.onclick = function () {
-            localStorage.clear();
-            location.reload();
-        };
-    } else {
-        statusText.innerText = "";
-        authBtn.innerText = "Login / Register";
-        authBtn.onclick = function () {
-            window.location.href = "login.html";
-        };
-    }
-}
-
-window.onload = checkLogin;
+                // Hier wird das AUTH-Script genutzt, um die Adresse zu holen
+                fetch(`${authScriptURL}?action=getUserData&email=${encodeURIComponent(userEmail)}`)
+                    .then(res => res.text())
+                    .then(text => {
+                        const data = JSON.parse(text);
+                        if (data && !data.error) {
+                            if (data.address) document.querySelector('input[name="test"]').value = data.address;
+                            if (data.postal) document.querySelector('input[name="postal"]').value = data.postal;
+                            if (data.city) document.querySelector('input[name="city"]').value = data.city;
+                        }
+                    });
+            }
+        }
+        window.onload = checkLoginAndLoadData;
     </script>
 
 </body>
