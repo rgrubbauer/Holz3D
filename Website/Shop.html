@@ -131,7 +131,7 @@
 
             if (userEmail) {
                 // Zeige "Hallo, Name" als Link zu profile.html
-                const userName = data.name.split('@')[0];
+                const userName = userEmail.split('@')[0];
                 statusText.innerHTML = `Hallo, <a href="Profile.html" style="color: black; text-decoration: underline; cursor: pointer;">${userName}</a>`;
 
                 authBtn.innerText = "Logout";
