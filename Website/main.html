@@ -190,7 +190,7 @@
             if (userEmail) {
                 // Zeige "Hallo, Name" als Link zu profile.html
                 const userName = userEmail.split('@')[0];
-                statusText.innerHTML = `Hallo, <a href="profile.html" style="color: black; text-decoration: underline; cursor: pointer;">${userName}</a>`;
+                statusText.innerHTML = `Hallo, <a href="Profile.html" style="color: black; text-decoration: underline; cursor: pointer;">${userName}</a>`;
 
                 authBtn.innerText = "Logout";
                 authBtn.onclick = function () {
@@ -210,4 +210,5 @@
         // WICHTIG: Die Funktion muss beim Laden der Seite auch aufgerufen werden!
         window.onload = checkLogin;
     </script>
+
 </body>
