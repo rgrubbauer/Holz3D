@@ -39,12 +39,12 @@
             font-size: 20px;
         }
 
-        .abt{
+        .abt {
             text-align: center;
             font-size: large;
         }
 
-         .auth-nav {
+        .auth-nav {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -100,7 +100,7 @@
 
 <body>
 
-    
+
     <div class="auth-nav">
         <span id="userStatus"></span>
         <button id="auth-btn" class="auth-btn" onclick="handleAuthAction()">Login</button>
@@ -121,28 +121,26 @@
     </div>
 
 
-<br><br><br>
+    <br><br><br>
 
-<script>
-    function checkLogin() {
+    <script>
+        function checkLogin() {
             const statusText = document.getElementById("userStatus");
             const authBtn = document.getElementById("auth-btn");
             const userEmail = localStorage.getItem("userEmail");
 
             if (userEmail) {
-                statusText.innerText = "Hallo, " + userEmail.split('@')[0];
+                // Zeige "Hallo, Name" als Link zu profile.html
+                const userName = userEmail.split('@')[0];
+                statusText.innerHTML = `Hallo, <a href="Profile.html" style="color: black; text-decoration: underline; cursor: pointer;">${userName}</a>`;
+
                 authBtn.innerText = "Logout";
-
-                if(document.getElementById('orderEmail')) {
-                    document.getElementById('orderEmail').value = userEmail;
-                }
-
                 authBtn.onclick = function () {
-                    window.location.href = "login.html"
                     localStorage.clear();
                     location.reload();
                 };
             } else {
+                // Zeige nichts und biete Login an
                 statusText.innerText = "";
                 authBtn.innerText = "Login / Register";
                 authBtn.onclick = function () {
@@ -150,6 +148,7 @@
                 };
             }
         }
+
         window.onload = checkLogin;
-</script>
+    </script>
 </body>
