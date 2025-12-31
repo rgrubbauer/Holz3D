@@ -113,7 +113,7 @@
     </div>
 
     <script>
-        const authURL = "https://script.google.com/macros/s/AKfycbw3yXh54u8jEaMb42fFgXyhmjDLCCVRWNZxDs9mwS-iAGR-vzeK-0JcLsEYitF-ShUYZw/exec";
+        const authURL = "https://script.google.com/macros/s/AKfycby8WcIzG8TkUbLMSS6XpL4fZPjn8nv6lEL3OI85bFFP98Pc9PV8AhJuYdzvqXvnSe0u7g/exec";
         const email = localStorage.getItem("userEmail");
 
         // 1. Daten beim Laden der Seite abrufen
@@ -125,27 +125,24 @@
                 return;
             }
 
-            // Wir senden die Email als Parameter in der URL mit
-            fetch(`${authURL}?action=getUserData&email=${encodeURIComponent(email)}`, {
-                method: 'GET', // Explizit GET für den Datenabruf
-                mode: 'cors',  // CORS Modus erzwingen
-                headers: {
-                    'Content-Type': 'text/plain' // Google mag manchmal lieber text/plain bei Redirects
-                }
-            })
-                .then(res => {
-                    if (!res.ok) throw new Error('Netzwerk-Antwort war nicht ok');
-                    return res.json();
-                })
-                .then(data => {
+            // Wir hängen einen Zeitstempel an (&t=...), um den Cache zu umgehen
+            const finalURL = `${authURL}?action=getUserData&email=${encodeURIComponent(email)}&t=${new Date().getTime()}`;
+
+            fetch(finalURL)
+                .then(res => res.text()) // Zuerst als Text empfangen (umgeht viele CORS Probleme)
+                .then(text => {
+                    const data = JSON.parse(text); // Den Text hier in JSON umwandeln
                     document.getElementById("loading").style.display = "none";
+
                     if (data.address) document.getElementById("address").value = data.address;
                     if (data.postal) document.getElementById("postal").value = data.postal;
                     if (data.city) document.getElementById("city").value = data.city;
+
+                    console.log("Erfolgreich geladen:", data);
                 })
                 .catch(err => {
-                    console.error("Fehler beim Laden:", err);
-                    document.getElementById("loading").innerText = "Konnte Daten nicht laden (CORS).";
+                    console.error("Fehler:", err);
+                    document.getElementById("loading").innerText = "Daten konnten nicht geladen werden.";
                 });
         };
 
