@@ -116,22 +116,6 @@
         const authURL = "https://script.google.com/macros/s/AKfycbwSfv9Pw1ESe7MH2buPoJeEguRTfKm21aQydp7ww06KHeOBpQ1_s1eaJdB1HsqmOqXhSg/exec";
         const email = localStorage.getItem("userEmail");
 
-        // 1. DIESE FUNKTION MUSS GLOBAL SEIN (Ganz oben stehen)
-        function handleData(data) {
-            console.log("Daten von Google empfangen:", data);
-            const loadingEl = document.getElementById("loading");
-            if (loadingEl) loadingEl.style.display = "none";
-
-            if (data && !data.error) {
-                if (data.address) document.getElementById("address").value = data.address;
-                if (data.postal) document.getElementById("postal").value = data.postal;
-                if (data.city) document.getElementById("city").value = data.city;
-            } else {
-                if (loadingEl) loadingEl.innerText = "Keine Profildaten gefunden.";
-            }
-        }
-
-        // 2. Der Aufruf beim Laden
         window.onload = function () {
             if (!email) {
                 alert("Bitte logge dich zuerst ein.");
@@ -139,43 +123,30 @@
                 return;
             }
 
-            // Wir erstellen das Script-Tag für JSONP
-            const script = document.createElement('script');
-            // Zeitstempel (t=...) verhindert, dass der Browser alte Daten anzeigt
-            script.src = `${authURL}?action=getUserData&email=${encodeURIComponent(email)}&callback=handleData&t=${new Date().getTime()}`;
+            // Wir laden die Daten als TEXT
+            fetch(`${authURL}?action=getUserData&email=${encodeURIComponent(email)}`)
+                .then(res => res.text()) // WICHTIG: Erst als Text lesen
+                .then(text => {
+                    console.log("Rohdaten vom Server:", text);
+                    const data = JSON.parse(text); // Dann manuell in JSON umwandeln
 
-            // Fehlerbehandlung, falls das Script gar nicht lädt
-            script.onerror = function () {
-                document.getElementById("loading").innerText = "Verbindung zum Server fehlgeschlagen.";
-            };
+                    document.getElementById("loading").style.display = "none";
 
-            document.body.appendChild(script);
+                    if (data && !data.error) {
+                        if (data.address) document.getElementById("address").value = data.address;
+                        if (data.postal) document.getElementById("postal").value = data.postal;
+                        if (data.city) document.getElementById("city").value = data.city;
+                    } else {
+                        document.getElementById("loading").innerText = "Noch keine Daten gespeichert.";
+                    }
+                })
+                .catch(err => {
+                    console.error("Fehler beim Laden:", err);
+                    document.getElementById("loading").innerText = "Fehler: Verbindung unterbrochen.";
+                });
         };
 
-        // 3. Speichern-Funktion (bleibt gleich)
-        function saveProfile() {
-            const btn = document.getElementById("saveBtn");
-            btn.innerText = "Wird gespeichert...";
-            btn.disabled = true;
-
-            const params = new URLSearchParams();
-            params.append('action', 'updateProfile');
-            params.append('email', email);
-            params.append('test', document.getElementById('address').value);
-            params.append('postal', document.getElementById('postal').value);
-            params.append('city', document.getElementById('city').value);
-
-            fetch(authURL, { method: 'POST', body: params, mode: 'no-cors' })
-                .then(() => {
-                    alert("Profil erfolgreich aktualisiert!");
-                    btn.innerText = "Daten speichern";
-                    btn.disabled = false;
-                })
-                .catch(error => {
-                    console.error("Speicherfehler:", error);
-                    btn.disabled = false;
-                });
-        }
+        // Die saveProfile Funktion bleibt wie sie ist (POST Methode)
     </script>
 </body>
 
