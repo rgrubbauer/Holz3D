@@ -99,7 +99,7 @@
 
         <div class="input-group">
             <label>Straße & Hausnummer</label>
-            <input type="text" id="address" placeholder="Musterstraße 1">
+            <input type="text" id="home" placeholder="Musterstraße 1">
         </div>
 
         <div class="input-group">
@@ -137,10 +137,21 @@
                     document.getElementById("loading").style.display = "none";
 
                     if (data && !data.error) {
+                        // 1. Name (ID ist "name")
                         if (data.name) document.getElementById("name").value = data.name;
-                        if (data.address) document.getElementById("home").value = data.address;
+
+                        // 2. Adresse (WICHTIG: Die ID in deinem HTML ist "home"!)
+                        if (data.address) {
+                            let addressField = document.getElementById("home");
+                            if (addressField) addressField.value = data.address;
+                        }
+
+                        // 3. PLZ (ID ist "postal")
                         if (data.postal) document.getElementById("postal").value = data.postal;
+
+                        // 4. Stadt (ID ist "city")
                         if (data.city) document.getElementById("city").value = data.city;
+
                     } else {
                         document.getElementById("loading").innerText = "Noch keine Daten gespeichert.";
                     }
