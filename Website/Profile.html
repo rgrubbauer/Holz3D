@@ -99,7 +99,7 @@
 
         <div class="input-group">
             <label>Straße & Hausnummer</label>
-            <input type="text" id="test" placeholder="Musterstraße 1">
+            <input type="text" id="address" placeholder="Musterstraße 1">
         </div>
 
         <div class="input-group">
@@ -139,7 +139,7 @@
 
                     if (data && !data.error) {
                         if (data.name) document.getElementById("name").value = data.name;
-                        if (data.address) document.getElementById("home").value = data.test;
+                        if (data.address) document.getElementById("home").value = data.address;
                         if (data.postal) document.getElementById("postal").value = data.hh;
                         if (data.city) document.getElementById("city").value = data.city;
                     } else {
