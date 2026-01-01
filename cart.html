@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warenkorb - Holz3D Werk</title>
+    <style>
+        body {
+            font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+
+        .cart-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .remove-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .checkout-btn {
+            background: black;
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: gray;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cart-container">
+        <h2>Dein Warenkorb</h2>
+        <div id="cartList">
+        </div>
+        <div class="total" id="totalPrice">Gesamt: 0.00 €</div>
+        <button class="checkout-btn" onclick="checkout()">Jetzt zahlungspflichtig bestellen</button>
+        <a href="Shop.html" class="back-link">← Zurück zum Shop</a>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        function renderCart() {
+            const list = document.getElementById("cartList");
+            const totalDisplay = document.getElementById("totalPrice");
+            list.innerHTML = "";
+            let total = 0;
+
+            if (cart.length === 0) {
+                list.innerHTML = "<p>Dein Warenkorb ist leer.</p>";
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    const div = document.createElement("div");
+                    div.className = "cart-item";
+                    div.innerHTML = `
+                    <span>${item.name}</span>
+                    <span>${item.price.toFixed(2)} € 
+                        <button class="remove-btn" onclick="removeItem(${index})">Löschen</button>
+                    </span>
+                `;
+                    list.appendChild(div);
+                });
+            }
+            totalDisplay.innerText = `Gesamt: ${total.toFixed(2)} €`;
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Dein Warenkorb ist leer!");
+                return;
+            }
+
+            const userEmail = localStorage.getItem("userEmail");
+            if (!userEmail) {
+                alert("Bitte logge dich zuerst ein, um zu bestellen.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Hier senden wir später die Daten an dein Google Script
+            alert("Vielen Dank! Deine Bestellung über " + cart.length + " Artikel wurde simuliert.");
+            // cart = [];
+            // localStorage.setItem("cart", JSON.stringify(cart));
+            // renderCart();
+        }
+
+        window.onload = renderCart;
+    </script>
+
+</body>
+
+</html>
