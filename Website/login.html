@@ -126,7 +126,7 @@
                         alert(mode === "login" ? "Login erfolgreich!" : "Account erstellt!");
 
                         // NEU: Nach Signup zur Profil-Vervollständigung, nach Login zur Main
-                        window.location.href = (mode === "signup") ? "profile.html" : "main.html";
+                        window.location.href = (mode === "signup") ? Profile.html" : "main.html";
                     } else {
                         alert("Fehler: " + cleanResponse);
                         resetButton();
@@ -146,5 +146,6 @@
         });
     </script>
 </body>
+
 
 </html>
