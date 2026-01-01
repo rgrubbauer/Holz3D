@@ -129,25 +129,27 @@
             }
 
             fetch(`${authURL}?action=getUserData&email=${encodeURIComponent(email)}`)
-                .then(res => res.text())
-                .then(text => {
-                    console.log("Rohdaten vom Server:", text);
-                    const data = JSON.parse(text);
-
+                .then(res => {
+                    if (!res.ok) throw new Error('Netzwerk-Antwort war nicht ok');
+                    return res.json(); // Direkt als JSON interpretieren
+                })
+                .then(data => {
+                    console.log("Daten erhalten:", data);
                     document.getElementById("loading").style.display = "none";
 
                     if (data && !data.error) {
                         if (data.name) document.getElementById("name").value = data.name;
+                        // Achte darauf, dass die ID "home" in deinem HTML existiert!
                         if (data.address) document.getElementById("home").value = data.address;
                         if (data.postal) document.getElementById("postal").value = data.postal;
                         if (data.city) document.getElementById("city").value = data.city;
                     } else {
-                        document.getElementById("loading").innerText = "Noch keine Daten gespeichert.";
+                        document.getElementById("loading").innerText = "Noch keine Daten vorhanden.";
                     }
                 })
                 .catch(err => {
                     console.error("Fehler beim Laden:", err);
-                    document.getElementById("loading").innerText = "Fehler: Verbindung unterbrochen.";
+                    document.getElementById("loading").innerText = "Fehler: Verbindung blockiert (CORS) oder Serverfehler.";
                 });
         };
 
