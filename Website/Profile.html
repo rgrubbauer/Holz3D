@@ -138,16 +138,28 @@
                     document.getElementById("loading").style.display = "none";
 
                     if (data && !data.error) {
-                        if (data.name && document.getElementById("name"))
-                            document.getElementById("name").value = data.name;
-                        if (data.address && document.getElementById("address"))
-                            document.getElementById("address").value = data.address;
-                        if (data.postal && document.getElementById("postal"))
-                            document.getElementById("hh").value = data.postal;
-                        if (data.city && document.getElementById("city"))
-                            document.getElementById("city").value = data.city;
+                        // Diese IDs müssen EXAKT so in deinem HTML stehen (id="...")
+                        if (document.getElementById("name"))
+                            document.getElementById("name").value = data.name || "";
+
+                        if (document.getElementById("address"))
+                            document.getElementById("address").value = data.address || "";
+
+                        // WICHTIG: Prüfe, ob dein HTML 'id="hh"' oder 'id="postal"' nutzt!
+                        // Wir probieren hier beides zur Sicherheit:
+                        let postalField = document.getElementById("hh") || document.getElementById("postal");
+                        if (postalField) postalField.value = data.postal || "";
+
+                        if (document.getElementById("city"))
+                            document.getElementById("city").value = data.city || "";
+
+                        // Speichern für den Warenkorb (LocalStorage)
+                        localStorage.setItem("userAddress", data.address || "");
+                        localStorage.setItem("userPostal", data.postal || "");
+                        localStorage.setItem("userCity", data.city || "");
+
                     } else {
-                        document.getElementById("loading").innerText = "Noch keine Daten vorhanden.";
+                        document.getElementById("loading").innerText = "Noch keine Profildaten.";
                     }
                 })
                 .catch(err => {
