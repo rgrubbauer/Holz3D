@@ -146,11 +146,6 @@
                             document.getElementById("hh").value = data.postal;
                         if (data.city && document.getElementById("city"))
                             document.getElementById("city").value = data.city;
-
-                        document.getElementById("name").value = data.name || "";
-                        document.getElementById("address").value = data.address || "";
-                        document.getElementById("hh").value = data.postal || "";
-                        document.getElementById("city").value = data.city || "";
                         localStorage.setItem("userAddress", data.address || "");
                         localStorage.setItem("userPostal", data.postal || "");
                         localStorage.setItem("userCity", data.city || "");
