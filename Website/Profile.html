@@ -138,20 +138,14 @@
                     document.getElementById("loading").style.display = "none";
 
                     if (data && !data.error) {
-                        // Wir prüfen jedes Feld einzeln, damit das Script nicht abstürzt
                         if (data.name && document.getElementById("name"))
                             document.getElementById("name").value = data.name;
-
                         if (data.address && document.getElementById("address"))
                             document.getElementById("address").value = data.address;
-
-                        // WICHTIG: Deine ID im HTML ist "hh" für die Postleitzahl
                         if (data.postal && document.getElementById("hh"))
                             document.getElementById("hh").value = data.postal;
-
                         if (data.city && document.getElementById("city"))
                             document.getElementById("city").value = data.city;
-
                     } else {
                         document.getElementById("loading").innerText = "Noch keine Daten vorhanden.";
                     }
