@@ -74,25 +74,85 @@
             align-self: center;
         }
 
-        @media (max-width: 600px) {
-            .menu nav a {
-                display: block;
-                padding: 10px 0;
-                font-size: 22px;
-            }
+        <style>.product-grid {
+            display: grid;
+            /* Erstellt 4 Spalten, die gleich groß sind */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-            .overhead h1 {
-                font-size: 28xp;
-            }
+        .product-card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
 
-            .auth-nav {
-                position: relative;
-                top: 0;
-                right: 0;
-                justify-content: center;
-                margin-bottom: 10px;
+        .product-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .add-btn {
+            background: black;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* Responsive: Auf dem Handy nur 1 oder 2 Spalten */
+        @media (max-width: 900px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        @media (max-width: 500px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    @media (max-width: 600px) {
+    .menu nav a {
+    display: block;
+    padding: 10px 0;
+    font-size: 22px;
+    }
+
+    .overhead h1 {
+    font-size: 28xp;
+    }
+
+    .auth-nav {
+    position: relative;
+    top: 0;
+    right: 0;
+    justify-content: center;
+    margin-bottom: 10px;
+    }
+    }
     </style>
 
 
