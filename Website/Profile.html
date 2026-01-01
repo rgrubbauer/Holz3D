@@ -104,7 +104,7 @@
 
         <div class="input-group">
             <label>Postleitzahl</label>
-            <input type="text" id="postal" placeholder="12345">
+            <input type="text" id="hh" placeholder="12345">
         </div>
 
         <div class="input-group">
@@ -138,25 +138,16 @@
                     document.getElementById("loading").style.display = "none";
 
                     if (data && !data.error) {
-                        // Diese IDs müssen EXAKT so in deinem HTML stehen (id="...")
-                        if (document.getElementById("name"))
-                            document.getElementById("name").value = data.name || "";
-
-                        if (document.getElementById("address"))
-                            document.getElementById("address").value = data.address || "";
-                        let postalField = document.getElementById("hh") || document.getElementById("postal");
-                        if (postalField) postalField.value = data.postal || "";
-
-                        if (document.getElementById("city"))
-                            document.getElementById("city").value = data.city || "";
-
-                        // Speichern für den Warenkorb (LocalStorage)
-                        localStorage.setItem("userAddress", data.address || "");
-                        localStorage.setItem("userPostal", data.postal || "");
-                        localStorage.setItem("userCity", data.city || "");
-
+                        if (data.name && document.getElementById("name"))
+                            document.getElementById("name").value = data.name;
+                        if (data.address && document.getElementById("address"))
+                            document.getElementById("address").value = data.address;
+                        if (data.postal && document.getElementById("postal"))
+                            document.getElementById("hh").value = data.postal;
+                        if (data.city && document.getElementById("city"))
+                            document.getElementById("city").value = data.city;
                     } else {
-                        document.getElementById("loading").innerText = "Noch keine Profildaten.";
+                        document.getElementById("loading").innerText = "Noch keine Daten vorhanden.";
                     }
                 })
                 .catch(err => {
