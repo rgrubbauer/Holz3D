@@ -10,10 +10,9 @@ function doPost(e) {
         var contenttype = e.paramenter.mimeType;
         var decoded = Utilities.base64Decode(e.parameter.fileData);
         var file = folder.createFile(Utilities.newBlob(decoded, contenttype, e.paramenter.fileName));
-
         // Email versenden
         MailApp.sendEmail({
-            to: "Floopschnee@gmail.com",
+            to: "TriggerDiggrSkibidiNi@gmail.com",
             subject: "Auftrag!",
             body: "Name: " + e.paramenter.name + "\nE-Mail: " + e.paramenter.email + "\nDatei-Link: " + file.getUrl()
         });
