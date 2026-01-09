@@ -104,7 +104,7 @@
 
         <div class="input-group">
             <label>Postleitzahl</label>
-            <input type="text" id="postal" placeholder="12345">
+            <input type="text" id="ii" placeholder="12345">
         </div>
 
         <div class="input-group">
@@ -143,7 +143,7 @@
                         if (data.address && document.getElementById("address"))
                             document.getElementById("address").value = data.address;
                         if (data.postal && document.getElementById("postal"))
-                            document.getElementById("postal").value = data.postal;
+                            document.getElementById("ii").value = data.postal;
                         if (data.city && document.getElementById("city"))
                             document.getElementById("city").value = data.city;
                     } else {
@@ -166,7 +166,7 @@
             params.append('email', email);
             params.append('name', document.getElementById("name").value);
             params.append('address', document.getElementById("address").value);
-            params.append('postal', document.getElementById("postal").value);
+            params.append('ii', document.getElementById("ii").value);
             params.append('city', document.getElementById("city").value);
             localStorage.setItem("userAddress", document.getElementById("address").value);
             localStorage.setItem("userPostal", document.getElementById("hh").value);
