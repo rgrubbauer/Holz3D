@@ -222,7 +222,7 @@
         <div class="product-grid" id="productGrid">
             <div class="product-card">
                 <img src="https://via.placeholder.com/150" alt="Produkt">
-                <h3>The items are loding...</h3>
+                <h3>The items are loading...</h3>
                 <p class="price">0€</p>
                 <button class="add-btn" onclick="addToCart('Easter Egg', 0)">In den Warenkorb</button>
             </div>
@@ -237,15 +237,15 @@
     <script>
         const authURL = "https://script.google.com/macros/s/AKfycbx8qMQVx5771W_x6pxxiD4lmEplGck9yzHkIL9JEFE7wCjXXTuo2Jzge6u8T9HL9tgxtw/exec";
 
-        // Warenkorb Logik
+    
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-        // --- FUNKTION: PRODUKTE ANZEIGEN (HTML GENERIEREN) ---
+      
         function displayProducts(products) {
             const grid = document.getElementById("productGrid");
             if (!products || products.length === 0) return;
 
-            grid.innerHTML = ""; // Altes löschen (Lade-Text oder alte Cache-Daten)
+            grid.innerHTML = ""; 
             products.forEach(product => {
                 const card = document.createElement("div");
                 card.className = "product-card";
